@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدفع وتأكيد الاشتراك | Alpha Academy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .payment-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 550px;
+            padding: 30px;
+            position: relative;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .card-header h2 {
+            color: #1e293b;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .card-header p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .ccp-info-box {
+            background: #eff6ff;
+            border: 1px dashed #2563eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .ccp-info-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1d4ed8;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #0f172a;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 15px;
+            direction: ltr;
+        }
+
+        .btn-copy {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-right: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .file-upload-wrapper {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 25px 20px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .file-upload-wrapper i {
+            font-size: 32px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .file-upload-wrapper p {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-email {
+            width: 100%;
+            background: #ea4335;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .alert-success, .alert-danger {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="payment-card">
+        <div class="card-header">
+            <h2>شحن الحساب وتأكيد الدفع</h2>
+            <p>قم بتحويل المبلغ عبر BaridiMob أو بريد الجزائر وارفاق الوصل لتفعيل الاشتراك</p>
+        </div>
+
+        <div class="ccp-info-box">
+            <div class="ccp-info-header">
+                <i class="fa-solid fa-building-columns"></i>
+                معلومات الحساب البريدي (RIP / CCP)
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">رقم الـ RIP:</span>
+                <div>
+                    <button type="button" class="btn-copy" id="copyBtn" onclick="copyRIP('00799999000000000000')">
+                        <i class="fa-regular fa-copy"></i> <span id="copyBtnText">نسخ</span>
+                    </button>
+                    <span class="info-value" id="ripValue">00799999000000000000</span>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">المبلغ المطلوب:</span>
+                <span class="info-value" style="color: #16a34a;">500.00 DZD</span>
+            </div>
+        </div>
+
+        <form id="paymentConfirmForm">
+
+            <div class="form-group">
+                <label>صورة وصل التحويل (Reçu):</label>
+                <div class="file-upload-wrapper" onclick="document.getElementById('fileInput').click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <p id="fileNameText">اضغط هنا لتحديد صورة الوصل (JPG, PNG)</p>
+                    <input type="file" id="fileInput" accept="image/*" required>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-submit">
+                <i class="fa-solid fa-paper-plane"></i> إرسال الوصل للتأكيد
+            </button>
+        </form>
+
+        <div id="successAlert" class="alert-success">
+            <p><i class="fa-solid fa-circle-check"></i> تم رفع الوصل بنجاح!</p>
+            <a id="emailBtn" href="#" target="_blank" class="btn-email">
+                <i class="fa-solid fa-envelope"></i> اضغط هنا لمراسلة الإدارة عبر البريد
+            </a>
+        </div>
+
+        <div id="errorAlert" class="alert-danger"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-xZUQAiqI37WTBN-zJ9iWT2skALUah_w",
+            authDomain: "alpha-academy-4f3a2.firebaseapp.com",
+            databaseURL: "https://alpha-academy-4f3a2-default-rtdb.firebaseio.com",
+            projectId: "alpha-academy-4f3a2",
+            storageBucket: "alpha-academy-4f3a2.firebasestorage.app",
+            messagingSenderId: "272901365758",
+            appId: "1:272901365758:web:452d9d4b7371471ea42aaf",
+            measurementId: "G-7LT5L0MNTK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let selectedFile = null;
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                document.getElementById('fileNameText').textContent = "تم اختيار: " + selectedFile.name;
+            }
+        });
+
+        window.copyRIP = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const copyText = document.getElementById('copyBtnText');
+                copyText.textContent = "تم النسخ!";
+                setTimeout(() => { copyText.textContent = "نسخ"; }, 2000);
+            });
+        };
+
+        const form = document.getElementById('paymentConfirmForm');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+
+            if (!selectedFile) {
+                errorAlert.textContent = "يرجى اختيار صورة الوصل قبل الإرسال.";
+                errorAlert.style.display = 'block';
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل والإرسال...';
+
+            try {
+                const userId = currentUser ? currentUser.uid : "guest_" + Date.now();
+                const userEmail = currentUser ? currentUser.email : "زائر غير مسجل";
+
+                // 1. رفع الصورة إلى Firebase Storage
+                const storageRef = ref(storage, `receipts/${userId}_${Date.now()}_${selectedFile.name}`);
+                const uploadResult = await uploadBytes(storageRef, selectedFile);
+                const fileUrl = await getDownloadURL(uploadResult.ref);
+
+                // 2. تسجيل العملية في Firestore
+                await addDoc(collection(db, "payments"), {
+                    userId: userId,
+                    userEmail: userEmail,
+                    receiptUrl: fileUrl,
+                    amount: 500,
+                    status: "pending",
+                    createdAt: serverTimestamp()
+                });
+
+                // 3. تجهيز رابط المراسلة
+                const adminEmail = "ilyeshabib2000@gmail.com";
+                const subject = encodeURIComponent("وصل دفع جديد - Alpha Academy");
+                const body = encodeURIComponent(
+                    `مرحباً،\n\nتم إرسال وصل دفع جديد.\n` +
+                    `المستخدم: ${userEmail}\n` +
+                    `رابط صورة الوصل:\n${fileUrl}`
+                );
+
+                const mailtoUrl = `mailto:${adminEmail}?subject=${subject}&body=${body}`;
+                document.getElementById('emailBtn').href = mailtoUrl;
+
+                form.reset();
+                selectedFile = null;
+                document.getElementById('fileNameText').textContent = "اضغط هنا لتحديد صورة الوصل (JPG, PNG)";
+                
+                successAlert.style.display = 'block';
+
+                // فتح تطبيق البريد تلقائياً
+                window.location.href = mailtoUrl;
+
+            } catch (error) {
+                console.error("خطأ أثناء الإرسال:", error);
+                errorAlert.textContent = "حدث خطأ أثناء رفع الوصل: " + (error.message || "تأكد من إعدادات Firebase Storage");
+                errorAlert.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> إرسال الوصل للتأكيد';
+            }
+        });
+    </script>
+</body>
+</html>

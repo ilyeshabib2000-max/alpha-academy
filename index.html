@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALPHA ACADEMY - الفا أكاديمي</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --bg-color: #080f1e;
+            --card-bg: rgba(16, 30, 58, 0.75);
+            --card-border: rgba(0, 195, 255, 0.25);
+            --card-glow: rgba(0, 195, 255, 0.15);
+            --primary-blue: #00d2ff;
+            --secondary-blue: #0072ff;
+            --accent-green: #00e676;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 114, 255, 0.25), transparent 70%),
+                radial-gradient(circle at 80% 50%, rgba(0, 210, 255, 0.12), transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(0, 114, 255, 0.15), transparent 50%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+        }
+
+        /* Header / Navbar */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 15, 30, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #040914;
+            border: 2px solid var(--primary-blue);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-blue);
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .brand-name {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
+
+        .brand-name span {
+            color: var(--primary-blue);
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary-blue);
+            background: rgba(0, 210, 255, 0.1);
+        }
+
+        .nav-pay-btn {
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .nav-pay-btn:hover {
+            background: rgba(0, 230, 118, 0.15);
+            color: #2eee8c;
+            box-shadow: 0 0 12px rgba(0, 230, 118, 0.3);
+        }
+
+        .auth-btn-login {
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue) !important;
+        }
+
+        .auth-btn-login:hover {
+            background: rgba(0, 210, 255, 0.15);
+        }
+
+        .auth-btn-register {
+            background: var(--primary-blue);
+            color: #040914 !important;
+            font-weight: 800;
+        }
+
+        .auth-btn-register:hover {
+            background: #33dcfb;
+            color: #040914 !important;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 210, 255, 0.08);
+            border: 1px solid rgba(0, 210, 255, 0.25);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+        }
+
+        .btn-logout:hover {
+            color: #ff5252;
+        }
+
+        /* Container General */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #020611;
+            border: 3px solid var(--primary-blue);
+            box-shadow: 0 0 35px rgba(0, 210, 255, 0.6), inset 0 0 15px rgba(0, 210, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-blue);
+            font-size: 55px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .hero-title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            background: rgba(0, 210, 255, 0.08);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            padding: 8px 24px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin: 40px 0 25px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--primary-blue);
+        }
+
+        /* Cards Layout Grid */
+        .cards-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card-box {
+            background: var(--card-bg);
+            border: 1.5px solid var(--card-border);
+            border-radius: 20px;
+            padding: 35px 25px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px var(--card-glow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0, 195, 255, 0.3);
+            border-color: var(--primary-blue);
+        }
+
+        /* ستايل خاص ببطاقة الدفع */
+        .card-pay {
+            border-color: rgba(0, 230, 118, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 230, 118, 0.1);
+        }
+
+        .card-pay:hover {
+            border-color: var(--accent-green);
+            box-shadow: 0 15px 35px rgba(0, 230, 118, 0.35);
+        }
+
+        .card-icon {
+            font-size: 50px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .card-pay .card-icon {
+            color: var(--accent-green);
+        }
+
+        .card-box h3 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .card-box p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn-enter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 90%;
+            padding: 12px;
+            border: 1.5px solid var(--primary-blue);
+            border-radius: 25px;
+            background: rgba(0, 210, 255, 0.12);
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-enter:hover {
+            background: var(--primary-blue);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.6);
+        }
+
+        .btn-enter-pay {
+            border-color: var(--accent-green);
+            background: rgba(0, 230, 118, 0.12);
+            color: var(--accent-green);
+        }
+
+        .btn-enter-pay:hover {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.6);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(4, 9, 20, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: #0b172e;
+            border: 1.5px solid var(--primary-blue);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.25);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #ffffff;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-header h3 i {
+            color: var(--primary-blue);
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-muted);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff4d4d;
+        }
+
+        /* Forms Styling Inside Modal */
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            background: rgba(0, 210, 255, 0.15);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .auth-form.active {
+            display: flex;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: #fff;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+        }
+
+        .btn-submit {
+            background: var(--primary-blue);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background: #33dcfb;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+        }
+
+        .auth-msg {
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        /* Goals List inside Modal */
+        .goals-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .goals-list li {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 210, 255, 0.15);
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.98rem;
+            line-height: 1.6;
+        }
+
+        .goals-list li i {
+            color: var(--primary-blue);
+            font-size: 18px;
+            margin-top: 3px;
+        }
+
+        /* Contact Details inside Modal */
+        .contact-group {
+            margin-bottom: 20px;
+        }
+
+        .contact-group h4 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: var(--text-color);
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .contact-link:hover {
+            background: rgba(0, 210, 255, 0.1);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            background: rgba(4, 9, 20, 0.85);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <a href="index.html" class="brand-logo">
+            <div class="logo-circle">α</div>
+            <div class="brand-name">
+                ALPHA ACADEMY
+                <span>الفا أكاديمي</span>
+            </div>
+        </a>
+        <nav>
+            <button class="nav-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});"><i class="fa-solid fa-house"></i> الرئيسية</button>
+            <button class="nav-btn" onclick="openModal('aboutModal')"><i class="fa-solid fa-bullseye"></i> حول البرنامج</button>
+            
+            <!-- زر تعبئة الرصيد / الدفع في الهيدر -->
+            <a href="recharge.html" class="nav-btn nav-pay-btn"><i class="fa-solid fa-wallet"></i> تعبئة الرصيد / الدفع</a>
+
+            <button class="nav-btn" onclick="openModal('contactModal')"><i class="fa-solid fa-headset"></i> تواصل معنا</button>
+            
+            <!-- أزرار الحساب -->
+            <div id="auth-buttons-container" style="display: flex; gap: 8px;">
+                <button onclick="openAuthModal('login')" class="nav-btn auth-btn-login">
+                    <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول
+                </button>
+                <button onclick="openAuthModal('register')" class="nav-btn auth-btn-register">
+                    <i class="fa-solid fa-user-plus"></i> إنشاء حساب
+                </button>
+            </div>
+
+            <!-- معلومات المستخدم -->
+            <div id="user-profile-container" class="user-profile">
+                <i class="fa-solid fa-circle-user" style="color: var(--primary-blue);"></i>
+                <span id="user-display-name">المستخدم</span>
+                <button id="logout-btn" class="btn-logout" title="تسجيل الخروج">
+                    <i class="fa-solid fa-right-from-bracket"></i> خروج
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-logo">α</div>
+            <h1 class="hero-title">ALPHA ACADEMY</h1>
+            <div class="hero-subtitle">منصتك التعليمية الشاملة للتميز والنجاح الدراسي</div>
+        </section>
+
+        <!-- Main Sections Grid -->
+        <section>
+            <h2 class="section-title"><i class="fa-solid fa-grip-vertical"></i> أقسام المنصة</h2>
+            
+            <div class="cards-grid">
+                
+                <!-- 1. مادة الفيزياء -->
+                <div class="card-box">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-atom"></i></div>
+                        <h3>مادة الفيزياء</h3>
+                        <p>دخول مجالات المادة: الحصص المباشرة، الواجبات، المختبر الرقمي وبنك الامتحانات.</p>
+                    </div>
+                    <div style="width: 100%;">
+                        <a href="physics.html" class="btn-enter">
+                            دخول المادة <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. بطاقة تعبئة الرصيد والدفع -->
+                <div class="card-box card-pay">
+                    <div>
+                        <div class="card-icon"><i class="fa-solid fa-credit-card"></i></div>
+                        <h3>تعبئة الرصيد / الدفع</h3>
+                        <p>تفعيل الاشتراكات الشهرية والفصلية عبر CCP، BaridiMob أو البطاقة الذهبية بسرعة وسهولة.</p>
+                    </div>
+                    <div style="width: 100%;">
+                        <a href="recharge.html" class="btn-enter btn-enter-pay">
+                            دفع الاشتراكات <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Modal 0: نافذة تسجيل الدخول / إنشاء حساب -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-lock"></i> الحساب الشخصي</h3>
+                <button class="close-btn" onclick="closeModal('authModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-btn-login" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+                <button class="auth-tab" id="tab-btn-register" onclick="switchAuthTab('register')">إنشاء حساب جديد</button>
+            </div>
+
+            <!-- نموذج تسجيل الدخول -->
+            <form id="form-login" class="auth-form active" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="login-email" required placeholder="example@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-submit">دخول</button>
+                <div class="auth-msg" id="login-msg"></div>
+            </form>
+
+            <!-- نموذج إنشاء حساب -->
+            <form id="form-register" class="auth-form" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="reg-name" required placeholder="الاسم واللقب">
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="reg-email" required placeholder="example@domain.com">
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="reg-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-submit">إنشاء الحساب</button>
+                <div class="auth-msg" id="reg-msg"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 1: حول البرنامج -->
+    <div class="modal-overlay" id="aboutModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-bullseye"></i> أهم أهداف منصة الفا أكاديمي</h3>
+                <button class="close-btn" onclick="closeModal('aboutModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <ul class="goals-list">
+                <li>
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div><strong>تبسيط الفهم العلمي:</strong> تقديم الشروحات بطرق بصرية وتفاعلية تساعد الطالب على استيعاب أعقد المفاهيم بسهولة.</div>
+                </li>
+                <li>
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div><strong>التطبيق العملي الرقمي:</strong> توفير مختبرات رقمية ومحاكاة تفاعلية لتجسيد التمارين والأنشطة بشكل واضح.</div>
+                </li>
+                <li>
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div><strong>التقييم المستمر:</strong> تمكين الطالب من اختباره بانتظام عبر بنك امتحانات وفروض شامل ومحلول بدقة.</div>
+                </li>
+                <li>
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div><strong>الدعم والمتابعة المباشرة:</strong> إتاحة التواصل مع الأساتذة عبر الحصص المباشرة لضمان الإجابة على كافة التساؤلات.</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Modal 2: تواصل معنا -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-headset"></i> معلومات التواصل</h3>
+                <button class="close-btn" onclick="closeModal('contactModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="contact-group">
+                <h4><i class="fa-solid fa-phone"></i> أرقام الهاتف</h4>
+                <a href="tel:0657260354" class="contact-link" dir="ltr">
+                    <span>0657 26 03 54</span>
+                    <i class="fa-solid fa-mobile-screen"></i>
+                </a>
+                <a href="tel:0656119253" class="contact-link" dir="ltr">
+                    <span>0656 11 92 53</span>
+                    <i class="fa-solid fa-mobile-screen"></i>
+                </a>
+            </div>
+
+            <div class="contact-group">
+                <h4><i class="fa-solid fa-envelope"></i> البريد الإلكتروني</h4>
+                <a href="mailto:rabahacheraiou2005@gmail.com" class="contact-link" dir="ltr">
+                    <span>rabahacheraiou2005@gmail.com</span>
+                    <i class="fa-regular fa-paper-plane"></i>
+                </a>
+                <a href="mailto:ilyeshabib2000@gmail.com" class="contact-link" dir="ltr">
+                    <span>ilyeshabib2000@gmail.com</span>
+                    <i class="fa-regular fa-paper-plane"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2026 ALPHA ACADEMY - جميع الحقوق محفوظة لـ الفا أكاديمي.
+    </footer>
+
+    <!-- JS لتشغيل النوافذ المنبثقة Modal -->
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function openAuthModal(type) {
+            switchAuthTab(type);
+            openModal('authModal');
+        }
+
+        function switchAuthTab(type) {
+            const loginBtn = document.getElementById('tab-btn-login');
+            const regBtn = document.getElementById('tab-btn-register');
+            const loginForm = document.getElementById('form-login');
+            const regForm = document.getElementById('form-register');
+
+            if (type === 'login') {
+                loginBtn.classList.add('active');
+                regBtn.classList.remove('active');
+                loginForm.classList.add('active');
+                regForm.classList.remove('active');
+            } else {
+                regBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                regForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+
+    <!-- JS الموحد للربط المباشر مع Supabase وإدارة حالة تسجيل الدخول -->
+    <script>
+        const SUPABASE_URL = 'https://srdkrxulmcgelmqqtpij.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyZGtyeHVsbWNnZWxtcXF0cGlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTY5NzcsImV4cCI6MjEwNDUzMjk3N30.fe7Tv3B7bcM_H28Q9hqGuvxjfdK24y9GKrGAclKnEqI';
+        
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const authButtons = document.getElementById('auth-buttons-container');
+        const userProfile = document.getElementById('user-profile-container');
+        const userNameSpan = document.getElementById('user-display-name');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        async function initAuth() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+
+                if (!session) {
+                    authButtons.style.display = 'flex';
+                    userProfile.style.display = 'none';
+                } else {
+                    authButtons.style.display = 'none';
+                    userProfile.style.display = 'flex';
+                    
+                    const user = session.user;
+                    const displayName = user.user_metadata?.full_name || user.email.split('@')[0];
+                    userNameSpan.textContent = displayName;
+                }
+            } catch (error) {
+                console.error("خطأ أثناء جلب الجلسة:", error);
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const msgEl = document.getElementById('login-msg');
+
+            msgEl.style.color = '#00d2ff';
+            msgEl.textContent = 'جاري تسجيل الدخول...';
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                msgEl.style.color = '#ff4d4d';
+                msgEl.textContent = 'خطأ: ' + error.message;
+            } else {
+                msgEl.style.color = '#2ecc71';
+                msgEl.textContent = 'تم تسجيل الدخول بنجاح!';
+                setTimeout(() => closeModal('authModal'), 1000);
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const msgEl = document.getElementById('reg-msg');
+
+            msgEl.style.color = '#00d2ff';
+            msgEl.textContent = 'جاري إنشاء الحساب...';
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: { full_name: fullName }
+                }
+            });
+
+            if (error) {
+                msgEl.style.color = '#ff4d4d';
+                msgEl.textContent = 'خطأ: ' + error.message;
+            } else {
+                msgEl.style.color = '#2ecc71';
+                msgEl.textContent = 'تم إنشاء الحساب بنجاح!';
+                setTimeout(() => closeModal('authModal'), 1000);
+            }
+        }
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                authButtons.style.display = 'none';
+                userProfile.style.display = 'flex';
+                const displayName = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
+                userNameSpan.textContent = displayName;
+            } else if (event === 'SIGNED_OUT') {
+                authButtons.style.display = 'flex';
+                userProfile.style.display = 'none';
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
+
+        initAuth();
+    </script>
+
+</body>
+</html>

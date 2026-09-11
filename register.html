@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد - ALPHA ACADEMY</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Supabase SDK JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --bg-color: #080f1e;
+            --card-bg: rgba(16, 30, 58, 0.85);
+            --card-border: rgba(0, 195, 255, 0.25);
+            --card-glow: rgba(0, 195, 255, 0.15);
+            --primary-blue: #00d2ff;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 114, 255, 0.25), transparent 70%),
+                radial-gradient(circle at 80% 50%, rgba(0, 210, 255, 0.12), transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(0, 114, 255, 0.15), transparent 50%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* HEADER */
+        header {
+            background: rgba(8, 15, 30, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-circle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #040914;
+            border: 2px solid var(--primary-blue);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-blue);
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .brand-name {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
+
+        .brand-name span {
+            color: var(--primary-blue);
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .home-btn {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+        }
+
+        .home-btn:hover {
+            background: rgba(0, 210, 255, 0.1);
+            color: var(--primary-blue);
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .login-btn:hover {
+            background: rgba(0, 210, 255, 0.1);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* MAIN */
+        main {
+            max-width: 480px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .register-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--card-border);
+            border-radius: 20px;
+            padding: 35px 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px var(--card-glow);
+        }
+
+        .register-card h2 {
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+            font-size: 1.7rem;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .register-card p {
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .form-group label i {
+            margin-left: 5px;
+            color: var(--primary-blue);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            background: #040914;
+            color: white;
+            outline: none;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 12px rgba(0, 210, 255, 0.3);
+        }
+
+        #submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-blue);
+            color: #040914;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        #submit-btn:hover {
+            background: #33dcfb;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+        }
+
+        /* MESSAGES */
+        #message-box {
+            display: none;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        #message-box.error {
+            background: rgba(255, 82, 82, 0.12);
+            color: #ff5252;
+            border: 1px solid rgba(255, 82, 82, 0.3);
+        }
+
+        #message-box.success {
+            background: rgba(0, 230, 118, 0.12);
+            color: #00e676;
+            border: 1px solid rgba(0, 230, 118, 0.3);
+        }
+
+        /* FOOTER */
+        .auth-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+
+        .auth-footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            margin-right: 5px;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            background: rgba(4, 9, 20, 0.85);
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <a href="index.html" class="brand-logo">
+        <div class="logo-circle">α</div>
+        <div class="brand-name">
+            ALPHA ACADEMY
+            <span>الفا أكاديمي</span>
+        </div>
+    </a>
+
+    <div class="header-buttons">
+        <a href="index.html" class="nav-btn home-btn">
+            <i class="fa-solid fa-house"></i> الرئيسية
+        </a>
+        <a href="login.html" class="nav-btn login-btn">
+            <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول
+        </a>
+    </div>
+</header>
+
+<main>
+    <div class="register-card">
+        <h2><i class="fa-solid fa-user-plus"></i> إنشاء حساب جديد</h2>
+        <p>قم بإنشاء حسابك الآن للوصول الكامل للمنصة</p>
+
+        <div id="message-box"></div>
+
+        <form id="register-form">
+            <div class="form-group">
+                <label for="fullname"><i class="fa-solid fa-user"></i> الاسم الكامل</label>
+                <input type="text" id="fullname" placeholder="الاسم واللقب" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="fa-solid fa-envelope"></i> البريد الإلكتروني</label>
+                <input type="email" id="email" placeholder="example@domain.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password"><i class="fa-solid fa-lock"></i> كلمة المرور</label>
+                <input type="password" id="password" placeholder="8 أحرف على الأقل" minlength="8" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password"><i class="fa-solid fa-shield-halved"></i> تأكيد كلمة المرور</label>
+                <input type="password" id="confirm-password" placeholder="إعادة كتابة كلمة المرور" minlength="8" required>
+            </div>
+
+            <button type="submit" id="submit-btn">
+                <span>إنشاء الحساب</span>
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            لديك حساب بالفعل؟
+            <a href="login.html">سجل دخولك من هنا</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    &copy; 2026 ALPHA ACADEMY - جميع الحقوق محفوظة لـ الفا أكاديمي.
+</footer>
+
+<script>
+    // تهيئة Supabase المباشرة بدلاً من import المسببة للمشاكل
+    const SUPABASE_URL = 'https://srdkrxulmcgelmqqtpij.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyZGtyeHVsbWNnZWxtcXF0cGlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTY5NzcsImV4cCI6MjEwNDUzMjk3N30.fe7Tv3B7bcM_H28Q9hqGuvxjfdK24y9GKrGAclKnEqI';
+    
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const registerForm = document.getElementById('register-form');
+    const fullnameInput = document.getElementById('fullname');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const submitButton = document.getElementById('submit-btn');
+    const messageBox = document.getElementById('message-box');
+
+    function showMessage(message, isError = true) {
+        messageBox.textContent = message;
+        messageBox.className = isError ? 'error' : 'success';
+        messageBox.style.display = 'block';
+    }
+
+    function hideMessage() {
+        messageBox.style.display = 'none';
+        messageBox.textContent = '';
+        messageBox.className = '';
+    }
+
+    // التحقق مما إذا كان المستخدم مسجلاً بالفعل
+    async function checkExistingSession() {
+        try {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                window.location.replace('index.html');
+            }
+        } catch (error) {
+            console.error('Session check error:', error);
+        }
+    }
+
+    checkExistingSession();
+
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideMessage();
+
+        const fullname = fullnameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (password !== confirmPassword) {
+            showMessage('كلمتا المرور غير متطابقتين.');
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إنشاء الحساب...`;
+
+        try {
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: { full_name: fullname }
+                }
+            });
+
+            if (error) {
+                if (error.message.includes('User already registered')) {
+                    throw new Error('هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول.');
+                } else {
+                    throw error;
+                }
+            }
+
+            // تسجيل الدخول التلقائي بعد إنشاء الحساب
+            const { data: signInData } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (signInData && signInData.session) {
+                showMessage('تم إنشاء الحساب والدخول بنجاح! جاري التوجيه إلى الصفحة الرئيسية...', false);
+                setTimeout(() => {
+                    window.location.replace('index.html');
+                }, 1000);
+            } else {
+                showMessage('تم إنشاء الحساب بنجاح! يرجى الانتقال إلى صفحة تسجيل الدخول.', false);
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+
+        } catch (err) {
+            console.error('Registration error:', err);
+            showMessage(err.message || 'حدث خطأ أثناء إنشاء الحساب.');
+            submitButton.disabled = false;
+            submitButton.innerHTML = `<span>إنشاء الحساب</span> <i class="fa-solid fa-arrow-left"></i>`;
+        }
+    });
+</script>
+
+</body>
+</html>

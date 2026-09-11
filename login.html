@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الحساب - ALPHA ACADEMY</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(0, 210, 255, 0.18), transparent 50%),
+                #080f1e;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .box {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(16, 30, 58, 0.95);
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            border-radius: 20px;
+            padding: 35px 30px;
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 210, 255, 0.08);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #040914;
+            border: 2px solid #00d2ff;
+            color: #00d2ff;
+            font-size: 42px;
+            font-weight: bold;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 1.7rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.88rem;
+            margin-bottom: 20px;
+        }
+
+        /* Tabs Container */
+        .tabs {
+            display: flex;
+            background: #040914;
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            gap: 5px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 5px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .tab-btn.active {
+            background: #00d2ff;
+            color: #040914;
+            box-shadow: 0 0 12px rgba(0, 210, 255, 0.4);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 0.88rem;
+            color: #e2e8f0;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: #040914;
+            color: white;
+            outline: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #00d2ff;
+            box-shadow: 0 0 12px rgba(0, 210, 255, 0.15);
+        }
+
+        .password-input {
+            padding-left: 45px;
+        }
+
+        .show-password {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .show-password:hover {
+            color: #00d2ff;
+        }
+
+        .alert-msg {
+            display: none;
+            padding: 10px 12px;
+            border-radius: 9px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .error {
+            background: rgba(255, 82, 82, 0.15);
+            border: 1px solid rgba(255, 82, 82, 0.4);
+            color: #ff6b6b;
+        }
+
+        .success {
+            background: rgba(0, 210, 255, 0.12);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            color: #00d2ff;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 10px;
+            background: #00d2ff;
+            color: #040914;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #33dcfb;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .home-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .home-link:hover {
+            color: #00d2ff;
+        }
+
+        @media (max-width: 450px) {
+            .box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div class="logo">α</div>
+
+    <h2 id="title-text">مرحباً بك 👋</h2>
+    <p class="subtitle" id="subtitle-text">أهلاً بك في منصة ALPHA ACADEMY</p>
+
+    <!-- أزرار التبديل -->
+    <div class="tabs">
+        <button type="button" class="tab-btn active" id="tab-login">تسجيل الدخول</button>
+        <button type="button" class="tab-btn" id="tab-register">إنشاء حساب جديد</button>
+    </div>
+
+    <div id="alert-msg" class="alert-msg"></div>
+
+    <!-- 1. نموذج تسجيل الدخول -->
+    <form id="login-form" class="form-section active">
+        <div class="input-group">
+            <label for="login-email">البريد الإلكتروني</label>
+            <input type="email" id="login-email" placeholder="example@email.com" autocomplete="email" required>
+        </div>
+
+        <div class="input-group">
+            <label for="login-pass">كلمة المرور</label>
+            <div class="input-wrapper">
+                <input type="password" id="login-pass" class="password-input" placeholder="أدخل كلمة المرور" autocomplete="current-password" required>
+                <button type="button" class="show-password" onclick="togglePass('login-pass', this)">👁</button>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="btn-login-submit">تسجيل الدخول</button>
+    </form>
+
+    <!-- 2. نموذج إنشاء حساب جديد -->
+    <form id="register-form" class="form-section">
+        <div class="input-group">
+            <label for="reg-name">الاسم الكامل</label>
+            <input type="text" id="reg-name" placeholder="مثال: محمد أحمد" required>
+        </div>
+
+        <div class="input-group">
+            <label for="reg-email">البريد الإلكتروني</label>
+            <input type="email" id="reg-email" placeholder="example@email.com" autocomplete="email" required>
+        </div>
+
+        <div class="input-group">
+            <label for="reg-pass">كلمة المرور</label>
+            <div class="input-wrapper">
+                <input type="password" id="reg-pass" class="password-input" placeholder="أدخل كلمة مرور قوية (6 رموز أو أكثر)" autocomplete="new-password" required minlength="6">
+                <button type="button" class="show-password" onclick="togglePass('reg-pass', this)">👁</button>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="btn-register-submit">إنشاء الحساب</button>
+    </form>
+
+    <a href="index.html" class="home-link">
+        ← العودة إلى الصفحة الرئيسية
+    </a>
+
+</div>
+
+<script>
+    // ==========================================
+    // إعدادات بيانات الربط بـ Supabase
+    // ==========================================
+    const SUPABASE_URL = 'https://srdkrxulmcgelmqqtpij.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyZGtyeHVsbWNnZWxtcXF0cGlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NTY5NzcsImV4cCI6MjEwNDUzMjk3N30.fe7Tv3B7bcM_H28Q9hqGuvxjfdK24y9GKrGAclKnEqI';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const alertMsg = document.getElementById('alert-msg');
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const titleText = document.getElementById('title-text');
+    const subtitleText = document.getElementById('subtitle-text');
+
+    // دوال التبديل
+    function switchToLogin() {
+        hideAlert();
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+        loginForm.classList.add('active');
+        registerForm.classList.remove('active');
+        titleText.textContent = 'مرحباً بك 👋';
+        subtitleText.textContent = 'سجّل الدخول إلى حسابك في ALPHA ACADEMY';
+    }
+
+    function switchToRegister() {
+        hideAlert();
+        tabRegister.classList.add('active');
+        tabLogin.classList.remove('active');
+        registerForm.classList.add('active');
+        loginForm.classList.remove('active');
+        titleText.textContent = 'حساب جديد 🚀';
+        subtitleText.textContent = 'قم بإنشاء حسابك للانضمام إلى ALPHA ACADEMY';
+    }
+
+    tabLogin.addEventListener('click', switchToLogin);
+    tabRegister.addEventListener('click', switchToRegister);
+
+    // فحص رابط URL لتشغيل تبويب محدد (مثل ?tab=register)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tab') === 'register') {
+        switchToRegister();
+    }
+
+    // إظهار/إخفاء كلمة المرور
+    function togglePass(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁';
+        }
+    }
+
+    function showAlert(msg, isSuccess = false) {
+        alertMsg.textContent = msg;
+        alertMsg.className = 'alert-msg ' + (isSuccess ? 'success' : 'error');
+        alertMsg.style.display = 'block';
+    }
+
+    function hideAlert() {
+        alertMsg.style.display = 'none';
+    }
+
+    // التحقق المباشر من وجود جلسة مفتوحة
+    async function checkExistingSession() {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                window.location.href = 'index.html';
+            }
+        } catch (error) {
+            console.error('Session check error:', error);
+        }
+    }
+    checkExistingSession();
+
+    // ==========================================
+    // 1. تنفيذ عملية تسجيل الدخول
+    // ==========================================
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-pass').value;
+        const btn = document.getElementById('btn-login-submit');
+
+        btn.disabled = true;
+        btn.textContent = 'جاري تسجيل الدخول...';
+
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                const errLower = error.message.toLowerCase();
+                if (errLower.includes('invalid login credentials')) {
+                    showAlert('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+                } else if (errLower.includes('email not confirmed')) {
+                    showAlert('يرجى تأكيد بريدك الإلكتروني أو إلغاء خيار التأكيد من لوحة التحكم.');
+                } else {
+                    showAlert(error.message || 'حدث خطأ أثناء تسجيل الدخول.');
+                }
+                btn.disabled = false;
+                btn.textContent = 'تسجيل الدخول';
+                return;
+            }
+
+            if (data.session) {
+                showAlert('تم تسجيل الدخول بنجاح ✓ جاري التحويل...', true);
+                setTimeout(() => { window.location.href = 'index.html'; }, 800);
+            }
+        } catch (err) {
+            showAlert('حدث خطأ غير متوقع، يرجى المحاولة لاحقاً.');
+            btn.disabled = false;
+            btn.textContent = 'تسجيل الدخول';
+        }
+    });
+
+    // ==========================================
+    // 2. تنفيذ عملية إنشاء الحساب
+    // ==========================================
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const fullName = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-pass').value;
+        const btn = document.getElementById('btn-register-submit');
+
+        if (password.length < 6) {
+            showAlert('كلمة المرور يجب أن تتكون من 6 أحرف أو أرقام على الأقل.');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'جاري إنشاء الحساب...';
+
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: { full_name: fullName }
+                }
+            });
+
+            if (error) {
+                showAlert(error.message || 'حدث خطأ أثناء إنشاء الحساب.');
+                btn.disabled = false;
+                btn.textContent = 'إنشاء الحساب';
+                return;
+            }
+
+            // التأكد مما إذا كان البريد مسجلاً مسبقاً
+            if (data.user && data.user.identities && data.user.identities.length === 0) {
+                showAlert('هذا البريد الإلكتروني مسجل بالفعل! حاول تسجيل الدخول.');
+                btn.disabled = false;
+                btn.textContent = 'إنشاء الحساب';
+                return;
+            }
+
+            if (data.user) {
+                if (data.session) {
+                    showAlert('تم إنشاء الحساب وتسجيل الدخول بنجاح ✓', true);
+                    setTimeout(() => { window.location.href = 'index.html'; }, 800);
+                } else {
+                    showAlert('تم إنشاء الحساب بنجاح وتسجيله في Supabase ✓', true);
+                    setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+                }
+            }
+        } catch (err) {
+            showAlert('حدث خطأ غير متوقع أثناء عملية التسجيل.');
+            btn.disabled = false;
+            btn.textContent = 'إنشاء الحساب';
+        }
+    });
+</script>
+
+</body>
+</html>
