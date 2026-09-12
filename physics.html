@@ -776,12 +776,13 @@
                 alert("هذه الميزة مخصصة للمشتركين فقط (VIP). يرجى شحن حسابك للوصول إليها.");
                 return;
             }
-
 // التوجيه المباشر للمشتركين VIP
             if (feature === 'homework') {
                 window.open("https://drive.google.com/drive/folders/1XJrNGlSmZltBHae6_lxrnxtOKHl9LIu-?usp=drive_link", '_blank');
-            } else if (feature === 'live' || feature === 'forum' || feature === 'quiz') {
+            } else if (feature === 'live' || feature === 'quiz') {
                 window.open("https://t.me/+aPkDjxEmMc01NDZk", '_blank');
+            } else if (feature === 'forum') {
+                window.open("https://t.me/+817S8Z8iXLJmNzM0", '_blank');
             }
         } catch (err) {
             console.error("خطأ في التحقق من العضوية:", err);
