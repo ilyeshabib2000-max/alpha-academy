@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مادة الكيمياء | Alpha Academy</title>
+  
+  <!-- Font Awesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0b1329;
+      --card-bg: rgba(17, 28, 56, 0.75);
+      --card-border: rgba(0, 210, 255, 0.2);
+      --accent-cyan: #00d2ff;
+      --accent-hover: #00a8cc;
+      --text-main: #ffffff;
+      --text-sub: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar Header */
+    .navbar {
+      background: rgba(11, 19, 41, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .brand i {
+      color: var(--accent-cyan);
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 25px;
+      border: 1px solid var(--accent-cyan);
+      background: rgba(0, 210, 255, 0.05);
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+      background: var(--accent-cyan);
+      color: #0b1329;
+      box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+    }
+
+    /* Hero Banner */
+    .page-header {
+      text-align: center;
+      padding: 50px 20px 20px;
+    }
+
+    .page-header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .page-header p {
+      color: var(--text-sub);
+      font-size: 1.1rem;
+    }
+
+    /* Cards Grid Container */
+    .main-container {
+      max-width: 1100px;
+      margin: 30px auto 60px;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    /* Alpha Academy Card-Box Style */
+    .card-box {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 35px 25px 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .card-box:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 12px 30px rgba(0, 210, 255, 0.2);
+    }
+
+    .card-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(0, 210, 255, 0.1);
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--accent-cyan);
+      margin: 0 auto 20px;
+    }
+
+    .card-box h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .card-box p {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    /* Enter Button Styling */
+    .btn-enter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 20px;
+      border-radius: 30px;
+      border: 1px solid var(--accent-cyan);
+      background: transparent;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-enter:hover {
+      background: var(--accent-cyan);
+      color: #0b1329;
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar Navigation -->
+  <nav class="navbar">
+    <div class="brand">
+      <i class="fa-solid fa-atom"></i> Alpha Academy
+    </div>
+    <a href="index.html" class="btn-back">
+      <i class="fa-solid fa-arrow-right"></i> العودة للرئيسية
+    </a>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <h1>مادة الكيمياء</h1>
+    <p>دخول مجالات المادة: المخبر الرقمي، الواجبات الأسبوعية وبنك الفروض والاختبارات.</p>
+  </header>
+
+  <!-- Main Grid -->
+  <main class="main-container">
+    <div class="grid-container">
+
+      <!-- 1. المخبر الرقمي -->
+      <div class="card-box">
+        <div>
+          <div class="card-icon"><i class="fa-solid fa-flask"></i></div>
+          <h3>المخبر الرقمي</h3>
+          <p>تجارب كيميائية تفاعلية، شروحات ومحاكاة مجهزة لمساعدتك على فهم التفاعلات الكيميائية تطبيقياً.</p>
+        </div>
+        <div style="width: 100%;">
+          <a href="https://drive.google.com/drive/folders/1NRP8MmNMObOcJ9mkDfnaDjOpPNHvblZ9?usp=drive_link" target="_blank" class="btn-enter">
+            دخول المجال <i class="fa-solid fa-arrow-left"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. الواجبات الأسبوعية -->
+      <div class="card-box">
+        <div>
+          <div class="card-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+          <h3>الواجبات الأسبوعية</h3>
+          <p>سلسلة الواجبات الدورية والتمارين الموجهة مع الحلول لترسيخ المفاهيم واختبار فهمك الأسبوعي.</p>
+        </div>
+        <div style="width: 100%;">
+          <a href="https://drive.google.com/drive/folders/1Tar2CJ2dg_4hTII4RGB4v3A_TVAmCStF?usp=drive_link" target="_blank" class="btn-enter">
+            دخول المجال <i class="fa-solid fa-arrow-left"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- 3. بنك الفروض والاختبارات -->
+      <div class="card-box">
+        <div>
+          <div class="card-icon"><i class="fa-solid fa-folder-open"></i></div>
+          <h3>بنك الامتحانات</h3>
+          <p>أرشيف شامل ومحدث لمختلف الفروض والاختبارات المصححة للتحضير والتدرب المباشر قبل الامتحانات.</p>
+        </div>
+        <div style="width: 100%;">
+          <a href="https://drive.google.com/drive/folders/19IlA5QzIucToNv3kob51oC3yvvgmzbXa?usp=drive_link" target="_blank" class="btn-enter">
+            دخول المجال <i class="fa-solid fa-arrow-left"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
