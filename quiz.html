@@ -494,7 +494,6 @@
             <span>الرجوع إلى الفيزياء</span>
         </a>
     </div>
-</div>
 
     <div class="header">
         <div class="header-title">
@@ -569,7 +568,6 @@
 <script>
     /* ==========================================================================
        هيكل البيانات: إدارة الوحدات (Quiz Modules Database)
-       لتزويد وحدات جديدة في المستقبل، كل ما عليك هو إضافة object جديد هنا.
        ========================================================================== */
     const quizModules = {
         "dimensional_analysis": {
@@ -654,17 +652,8 @@
                 }
             ]
         }
-        
-        /* 
-        مثال لإضافة وحدة جديدة مستقبلاً:
-        , "kinematics": {
-            unitName: "Kinematics & Motion",
-            questions: [ ... ]
-        }
-        */
     };
 
-    // تحديد الوحدة الحالية (يمكن تغيير المعرّف لاستدعاء أي وحدة مستقبلاً)
     const currentUnitKey = "dimensional_analysis";
     const currentModule = quizModules[currentUnitKey];
     const questions = currentModule.questions;
@@ -673,7 +662,6 @@
     let score = 0;
     let answered = false;
 
-    // تهيئة عنوان الوحدة
     document.getElementById('unit-title').innerText = currentModule.unitName;
 
     function loadQuestion() {
