@@ -488,12 +488,13 @@
 
 <div class="container">
     <div class="top-nav">
-        <!-- زر الرجوع إلى صفحة الفيزيك -->
-        <a href="physic.html" class="back-link">
+        <!-- زر الرجوع إلى صفحة الفيزياء -->
+        <a href="physics.html" class="back-link" onclick="if(history.length > 1 && document.referrer.includes('physic')) { event.preventDefault(); history.back(); }">
             <i class="fa-solid fa-arrow-right"></i>
             <span>الرجوع إلى الفيزياء</span>
         </a>
     </div>
+</div>
 
     <div class="header">
         <div class="header-title">
