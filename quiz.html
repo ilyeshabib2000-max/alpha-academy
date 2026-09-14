@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة الاختبارات - Physics Quiz</title>
+    <!-- MathJax for rendering LaTeX formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --correct: #22c55e;
+            --incorrect: #ef4444;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .quiz-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .question-card {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            direction: ltr;
+        }
+
+        .option-btn {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 18px;
+            color: var(--text-main);
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            background-color: rgba(59, 130, 246, 0.15);
+            border-color: var(--primary);
+        }
+
+        .option-btn.correct {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+            border-color: var(--correct) !important;
+            color: #4ade80;
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+            border-color: var(--incorrect) !important;
+            color: #f87171;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-right: 4px solid var(--primary);
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            display: none;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-card {
+            text-align: center;
+            display: none;
+        }
+
+        .result-card h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .score-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Physics Quiz</h1>
+        <p>Units, Dimensions & Measurement</p>
+    </div>
+
+    <div id="quiz-box">
+        <div class="quiz-progress">
+            <span id="question-count">السؤال 1 من 7</span>
+            <span id="score-display">النتيجة: 0</span>
+        </div>
+
+        <div class="question-card">
+            <div class="question-text" id="question-text"></div>
+            <div class="options-grid" id="options-container"></div>
+            <div class="explanation" id="explanation"></div>
+        </div>
+
+        <div class="actions">
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>السؤال التالي</button>
+        </div>
+    </div>
+
+    <div class="result-card" id="result-box">
+        <h2>انتهى الاختبار!</h2>
+        <p class="score-text" id="final-score"></p>
+        <button class="btn" onclick="restartQuiz()">إعادة الاختبار</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Which derived unit is used to express pressure in the International System?",
+            options: [
+                "watt ($W$)",
+                "newton ($N$)",
+                "pascal ($Pa$)",
+                "joule ($J$)"
+            ],
+            correct: 2,
+            explanation: "Pascal ($Pa$) is the SI derived unit of pressure, equivalent to one newton per square meter ($N/m^2$)."
+        },
+        {
+            question: "What is the dimensional formula for mass density as derived from base units?",
+            options: [
+                "$ML^3$",
+                "$ML^{-3}$",
+                "$ML^{-1}$",
+                "$ML^{-2}$"
+            ],
+            correct: 1,
+            explanation: "Mass density = $\\frac{\\text{Mass}}{\\text{Volume}} = \\frac{M}{L^3} = ML^{-3}$."
+        },
+        {
+            question: "In dimensional analysis, what is the standard symbol used to represent the dimension of 'Amount of substance'?",
+            options: [
+                "$N$",
+                "$A$",
+                "$n$",
+                "$M$"
+            ],
+            correct: 0,
+            explanation: "In the SI dimensional representation, $N$ is used for the Amount of Substance."
+        },
+        {
+            question: "If an equation is given as $s = vt^2 + 0.5at$, why is it considered dimensionally incorrect?",
+            options: [
+                "Velocity and time cannot be multiplied together.",
+                "The constant 0.5 has no dimensions.",
+                "The acceleration term must always be squared.",
+                "The terms $vt^2$ and $0.5at$ have different dimensions from each other and from $s$."
+            ],
+            correct: 3,
+            explanation: "$[s] = L$, $[vt^2] = (LT^{-1})T^2 = LT$, and $[0.5at] = (LT^{-2})T = LT^{-1}$. Since terms added together have different dimensions, the equation is incorrect."
+        },
+        {
+            question: "According to the provided applications of dimensional analysis, which task involves ensuring all terms in an equation have the same dimensions?",
+            options: [
+                "Unit Conversion",
+                "Checking Equations",
+                "Constant Dimensioning",
+                "Relation Discovery"
+            ],
+            correct: 1,
+            explanation: "Checking the homogeneity/correctness of equations requires verifying that all terms have identical dimensions."
+        },
+        {
+            question: "Which metric prefix represents the multiplier $10^9$?",
+            options: [
+                "giga",
+                "tera",
+                "mega",
+                "peta"
+            ],
+            correct: 0,
+            explanation: "Giga ($G$) corresponds to $10^9$."
+        },
+        {
+            question: "The period of a simple pendulum is given by $\\tau = k \\sqrt{\\frac{l}{g}}$. If $\\beta$ is the power of length $l$ and $\\gamma$ is the power of gravity $g$, which values satisfy dimensional consistency for the period $T$?",
+            options: [
+                "$\\beta = \\frac{1}{2}, \\gamma = -\\frac{1}{2}$",
+                "$\\beta = 0, \\gamma = 1$",
+                "$\\beta = 1, \\gamma = -1$",
+                "$\\beta = -\\frac{1}{2}, \\gamma = \\frac{1}{2}$"
+            ],
+            correct: 0,
+            explanation: "$\\tau = k l^{\\beta} g^{\\gamma} \\Rightarrow T = L^{\\beta} (LT^{-2})^{\\gamma} = L^{\\beta+\\gamma} T^{-2\\gamma}$. Equating powers gives $\\gamma = -1/2$ and $\\beta = 1/2$."
+        }
+    ];
+
+    let currentIdx = 0;
+    let score = 0;
+    let answered = false;
+
+    function loadQuestion() {
+        answered = false;
+        document.getElementById('next-btn').disabled = true;
+        document.getElementById('explanation').style.display = 'none';
+
+        const q = questions[currentIdx];
+        document.getElementById('question-count').innerText = `السؤال ${currentIdx + 1} من ${questions.length}`;
+        document.getElementById('score-display').innerText = `النتيجة: ${score}`;
+        document.getElementById('question-text').innerHTML = q.question;
+
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<b style="margin-right:8px;">${String.fromCharCode(65 + idx)}.</b> ${opt}`;
+            btn.onclick = () => selectOption(idx);
+            container.appendChild(btn);
+        });
+
+        if (window.MathJax) {
+            MathJax.typesetPromise();
+        }
+    }
+
+    function selectOption(idx) {
+        if (answered) return;
+        answered = true;
+
+        const q = questions[currentIdx];
+        const buttons = document.querySelectorAll('.option-btn');
+
+        if (idx === q.correct) {
+            buttons[idx].classList.add('correct');
+            score++;
+        } else {
+            buttons[idx].classList.add('incorrect');
+            buttons[q.correct].classList.add('correct');
+        }
+
+        buttons.forEach(btn => btn.disabled = true);
+
+        const exp = document.getElementById('explanation');
+        exp.innerHTML = `<strong>Explanation:</strong> ${q.explanation}`;
+        exp.style.display = 'block';
+
+        document.getElementById('score-display').innerText = `النتيجة: ${score}`;
+        document.getElementById('next-btn').disabled = false;
+
+        if (window.MathJax) {
+            MathJax.typesetPromise();
+        }
+    }
+
+    function nextQuestion() {
+        currentIdx++;
+        if (currentIdx < questions.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-box').style.display = 'none';
+        const resBox = document.getElementById('result-box');
+        resBox.style.display = 'block';
+        document.getElementById('final-score').innerText = `حصلت على ${score} من ${questions.length}`;
+    }
+
+    function restartQuiz() {
+        currentIdx = 0;
+        score = 0;
+        document.getElementById('quiz-box').style.display = 'block';
+        document.getElementById('result-box').style.display = 'none';
+        loadQuestion();
+    }
+
+    // Initialize quiz
+    loadQuestion();
+</script>
+</body>
+</html>
+```eof
+
+لقد قمت بإنشاء ملف `quiz.html` يتضمن كافة الأسئلة الفيزيائية المرفقة في الصور مع الشرح وإمكانية الاحتساب التفاعلي للنتائج وتنسيق معادلات LaTeX بشكل واضح. يمكنك الآن ربطه بسهولة مع بقية صفحات موقعك!
