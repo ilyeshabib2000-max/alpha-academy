@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- MathJax for rendering LaTeX formulas -->
+    <!-- MathJax for rendering LaTeX formulas in questions/explanations only -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -51,7 +51,6 @@
             overflow-x: hidden;
         }
 
-        /* Ambient Background Glows */
         .ambient-glow {
             position: fixed;
             width: 400px;
@@ -194,7 +193,8 @@
             border-radius: 14px;
             padding: 16px 20px;
             color: var(--text-main);
-            font-size: 0.98rem;
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
             text-align: left;
             transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -208,22 +208,28 @@
         .option-btn .opt-content {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             z-index: 1;
         }
 
         .option-btn .opt-badge {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
             background: rgba(255, 255, 255, 0.06);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-muted);
             transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .option-btn .opt-text {
+            font-size: 1.05rem;
+            letter-spacing: 0.3px;
         }
 
         .option-btn:hover:not([disabled]) {
@@ -328,7 +334,7 @@
             transform: none;
         }
 
-        /* Luxurious Result Card Screen */
+        /* Result Screen */
         .result-card {
             text-align: center;
             display: none;
@@ -451,7 +457,6 @@
 <div class="ambient-glow-2"></div>
 
 <div class="container">
-    <!-- Header -->
     <div class="header">
         <div class="header-title">
             <div class="header-icon">
@@ -464,7 +469,6 @@
         </div>
     </div>
 
-    <!-- Quiz Main Interface -->
     <div id="quiz-box">
         <div class="progress-container">
             <div class="progress-info">
@@ -490,7 +494,6 @@
         </div>
     </div>
 
-    <!-- Luxurious Result Screen -->
     <div class="result-card" id="result-box">
         <div class="score-circle-wrapper">
             <svg class="score-circle-svg" viewBox="0 0 150 150">
@@ -529,46 +532,46 @@
         {
             question: "Which derived unit is used to express pressure in the International System?",
             options: [
-                "watt ($W$)",
-                "newton ($N$)",
-                "pascal ($Pa$)",
-                "joule ($J$)"
+                "watt (W)",
+                "newton (N)",
+                "pascal (Pa)",
+                "joule (J)"
             ],
             correct: 2,
-            explanation: "Pascal ($Pa$) is the SI derived unit of pressure, equivalent to one newton per square meter ($N/m^2$)."
+            explanation: "Pascal (Pa) is the SI derived unit of pressure, equivalent to one newton per square meter (N/m²)."
         },
         {
             question: "What is the dimensional formula for mass density as derived from base units?",
             options: [
-                "$ML^3$",
-                "$ML^{-3}$",
-                "$ML^{-1}$",
-                "$ML^{-2}$"
+                "ML³",
+                "ML⁻³",
+                "ML⁻¹",
+                "ML⁻²"
             ],
             correct: 1,
-            explanation: "Mass density = $\\frac{\\text{Mass}}{\\text{Volume}} = \\frac{M}{L^3} = ML^{-3}$."
+            explanation: "Mass density = Mass / Volume = M / L³ = ML⁻³."
         },
         {
             question: "In dimensional analysis, what is the standard symbol used to represent the dimension of 'Amount of substance'?",
             options: [
-                "$N$",
-                "$A$",
-                "$n$",
-                "$M$"
+                "N",
+                "A",
+                "n",
+                "M"
             ],
             correct: 0,
-            explanation: "In the SI dimensional representation, $N$ is used for the Amount of Substance."
+            explanation: "In the SI dimensional representation, N is used for the Amount of Substance."
         },
         {
-            question: "If an equation is given as $s = vt^2 + 0.5at$, why is it considered dimensionally incorrect?",
+            question: "If an equation is given as s = vt² + 0.5at, why is it considered dimensionally incorrect?",
             options: [
                 "Velocity and time cannot be multiplied together.",
                 "The constant 0.5 has no dimensions.",
                 "The acceleration term must always be squared.",
-                "The terms $vt^2$ and $0.5at$ have different dimensions from each other and from $s$."
+                "The terms vt² and 0.5at have different dimensions from each other and from s."
             ],
             correct: 3,
-            explanation: "$[s] = L$, $[vt^2] = (LT^{-1})T^2 = LT$, and $[0.5at] = (LT^{-2})T = LT^{-1}$. Since terms added together have different dimensions, the equation is incorrect."
+            explanation: "[s] = L, [vt²] = (LT⁻¹)T² = LT, and [0.5at] = (LT⁻²)T = LT⁻¹. Since terms added together have different dimensions, the equation is incorrect."
         },
         {
             question: "According to the provided applications of dimensional analysis, which task involves ensuring all terms in an equation have the same dimensions?",
@@ -582,7 +585,7 @@
             explanation: "Checking the homogeneity/correctness of equations requires verifying that all terms have identical dimensions."
         },
         {
-            question: "Which metric prefix represents the multiplier $10^9$?",
+            question: "Which metric prefix represents the multiplier 10⁹?",
             options: [
                 "giga",
                 "tera",
@@ -590,18 +593,18 @@
                 "peta"
             ],
             correct: 0,
-            explanation: "Giga ($G$) corresponds to $10^9$."
+            explanation: "Giga (G) corresponds to 10⁹."
         },
         {
-            question: "The period of a simple pendulum is given by $\\tau = k \\sqrt{\\frac{l}{g}}$. If $\\beta$ is the power of length $l$ and $\\gamma$ is the power of gravity $g$, which values satisfy dimensional consistency for the period $T$?",
+            question: "The period of a simple pendulum is given by τ = k √(l/g). If β is the power of length l and γ is the power of gravity g, which values satisfy dimensional consistency for the period T?",
             options: [
-                "$\\beta = \\frac{1}{2}, \\gamma = -\\frac{1}{2}$",
-                "$\\beta = 0, \\gamma = 1$",
-                "$\\beta = 1, \\gamma = -1$",
-                "$\\beta = -\\frac{1}{2}, \\gamma = \\frac{1}{2}$"
+                "β = 1/2 , γ = -1/2",
+                "β = 0 , γ = 1",
+                "β = 1 , γ = -1",
+                "β = -1/2 , γ = 1/2"
             ],
             correct: 0,
-            explanation: "$\\tau = k l^{\\beta} g^{\\gamma} \\Rightarrow T = L^{\\beta} (LT^{-2})^{\\gamma} = L^{\\beta+\\gamma} T^{-2\\gamma}$. Equating powers gives $\\gamma = -1/2$ and $\\beta = 1/2$."
+            explanation: "τ = k lᵇ gᵍ ⟹ T = Lᵇ (LT⁻²)ᵍ = Lᵇ⁺ᵍ T⁻²ᵍ. Equating powers gives γ = -1/2 and β = 1/2."
         }
     ];
 
@@ -616,7 +619,6 @@
 
         const q = questions[currentIdx];
         
-        // Progress calculations
         const progressPct = Math.round(((currentIdx) / questions.length) * 100);
         document.getElementById('question-count').innerText = `السؤال ${currentIdx + 1} من ${questions.length}`;
         document.getElementById('progress-percent').innerText = `${progressPct}%`;
@@ -633,7 +635,7 @@
             btn.innerHTML = `
                 <div class="opt-content">
                     <span class="opt-badge">${String.fromCharCode(65 + idx)}</span>
-                    <span>${opt}</span>
+                    <span class="opt-text">${opt}</span>
                 </div>
                 <i class="fa-solid status-icon"></i>
             `;
@@ -700,9 +702,8 @@
         document.getElementById('stat-correct').innerText = score;
         document.getElementById('stat-incorrect').innerText = total - score;
 
-        // Circle animation calculation
         const circleProgress = document.getElementById('circle-progress');
-        const circumference = 2 * Math.PI * 65; // r = 65
+        const circumference = 2 * Math.PI * 65;
         const offset = circumference - (percentage / 100) * circumference;
         
         setTimeout(() => {
@@ -710,7 +711,6 @@
             circleProgress.style.strokeDashoffset = `${offset}`;
         }, 100);
 
-        // Performance Status
         const statusBadge = document.getElementById('result-status');
         if (percentage >= 85) {
             statusBadge.innerText = 'ممتاز! أداء استثنائي 🚀';
@@ -733,7 +733,6 @@
         document.getElementById('quiz-box').style.display = 'block';
         document.getElementById('result-box').style.display = 'none';
         
-        // Reset SVG Progress Circle
         const circleProgress = document.getElementById('circle-progress');
         const circumference = 2 * Math.PI * 65;
         circleProgress.style.strokeDashoffset = `${circumference}`;
@@ -741,7 +740,6 @@
         loadQuestion();
     }
 
-    // Initialize quiz on load
     loadQuestion();
 </script>
 </body>
