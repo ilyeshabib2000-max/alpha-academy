@@ -89,6 +89,36 @@
             transition: all 0.3s ease;
         }
 
+        /* Nav & Header */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(3px);
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -457,14 +487,22 @@
 <div class="ambient-glow-2"></div>
 
 <div class="container">
+    <div class="top-nav">
+        <!-- زر الرجوع إلى صفحة الفيزيك -->
+        <a href="physic.html" class="back-link">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span>الرجوع إلى الفيزياء</span>
+        </a>
+    </div>
+
     <div class="header">
         <div class="header-title">
             <div class="header-icon">
                 <i class="fa-solid fa-atom"></i>
             </div>
             <div>
-                <h1>Physics Quiz</h1>
-                <p>Units, Dimensions & Measurement</p>
+                <h1 id="quiz-title">Physics Quiz</h1>
+                <p id="unit-title">Loading Unit...</p>
             </div>
         </div>
     </div>
@@ -528,89 +566,114 @@
 </div>
 
 <script>
-    const questions = [
-        {
-            question: "Which derived unit is used to express pressure in the International System?",
-            options: [
-                "watt (W)",
-                "newton (N)",
-                "pascal (Pa)",
-                "joule (J)"
-            ],
-            correct: 2,
-            explanation: "Pascal (Pa) is the SI derived unit of pressure, equivalent to one newton per square meter (N/m²)."
-        },
-        {
-            question: "What is the dimensional formula for mass density as derived from base units?",
-            options: [
-                "ML³",
-                "ML⁻³",
-                "ML⁻¹",
-                "ML⁻²"
-            ],
-            correct: 1,
-            explanation: "Mass density = Mass / Volume = M / L³ = ML⁻³."
-        },
-        {
-            question: "In dimensional analysis, what is the standard symbol used to represent the dimension of 'Amount of substance'?",
-            options: [
-                "N",
-                "A",
-                "n",
-                "M"
-            ],
-            correct: 0,
-            explanation: "In the SI dimensional representation, N is used for the Amount of Substance."
-        },
-        {
-            question: "If an equation is given as s = vt² + 0.5at, why is it considered dimensionally incorrect?",
-            options: [
-                "Velocity and time cannot be multiplied together.",
-                "The constant 0.5 has no dimensions.",
-                "The acceleration term must always be squared.",
-                "The terms vt² and 0.5at have different dimensions from each other and from s."
-            ],
-            correct: 3,
-            explanation: "[s] = L, [vt²] = (LT⁻¹)T² = LT, and [0.5at] = (LT⁻²)T = LT⁻¹. Since terms added together have different dimensions, the equation is incorrect."
-        },
-        {
-            question: "According to the provided applications of dimensional analysis, which task involves ensuring all terms in an equation have the same dimensions?",
-            options: [
-                "Unit Conversion",
-                "Checking Equations",
-                "Constant Dimensioning",
-                "Relation Discovery"
-            ],
-            correct: 1,
-            explanation: "Checking the homogeneity/correctness of equations requires verifying that all terms have identical dimensions."
-        },
-        {
-            question: "Which metric prefix represents the multiplier 10⁹?",
-            options: [
-                "giga",
-                "tera",
-                "mega",
-                "peta"
-            ],
-            correct: 0,
-            explanation: "Giga (G) corresponds to 10⁹."
-        },
-        {
-            question: "The period of a simple pendulum is given by τ = k √(l/g). If β is the power of length l and γ is the power of gravity g, which values satisfy dimensional consistency for the period T?",
-            options: [
-                "β = 1/2 , γ = -1/2",
-                "β = 0 , γ = 1",
-                "β = 1 , γ = -1",
-                "β = -1/2 , γ = 1/2"
-            ],
-            correct: 0,
-            explanation: "τ = k lᵇ gᵍ ⟹ T = Lᵇ (LT⁻²)ᵍ = Lᵇ⁺ᵍ T⁻²ᵍ. Equating powers gives γ = -1/2 and β = 1/2."
+    /* ==========================================================================
+       هيكل البيانات: إدارة الوحدات (Quiz Modules Database)
+       لتزويد وحدات جديدة في المستقبل، كل ما عليك هو إضافة object جديد هنا.
+       ========================================================================== */
+    const quizModules = {
+        "dimensional_analysis": {
+            unitName: "Dimensional Analysis & Measurement",
+            questions: [
+                {
+                    question: "Which derived unit is used to express pressure in the International System?",
+                    options: [
+                        "watt (W)",
+                        "newton (N)",
+                        "pascal (Pa)",
+                        "joule (J)"
+                    ],
+                    correct: 2,
+                    explanation: "Pascal (Pa) is the SI derived unit of pressure, equivalent to one newton per square meter (N/m²)."
+                },
+                {
+                    question: "What is the dimensional formula for mass density as derived from base units?",
+                    options: [
+                        "ML³",
+                        "ML⁻³",
+                        "ML⁻¹",
+                        "ML⁻²"
+                    ],
+                    correct: 1,
+                    explanation: "Mass density = Mass / Volume = M / L³ = ML⁻³."
+                },
+                {
+                    question: "In dimensional analysis, what is the standard symbol used to represent the dimension of 'Amount of substance'?",
+                    options: [
+                        "N",
+                        "A",
+                        "n",
+                        "M"
+                    ],
+                    correct: 0,
+                    explanation: "In the SI dimensional representation, N is used for the Amount of Substance."
+                },
+                {
+                    question: "If an equation is given as s = vt² + 0.5at, why is it considered dimensionally incorrect?",
+                    options: [
+                        "Velocity and time cannot be multiplied together.",
+                        "The constant 0.5 has no dimensions.",
+                        "The acceleration term must always be squared.",
+                        "The terms vt² and 0.5at have different dimensions from each other and from s."
+                    ],
+                    correct: 3,
+                    explanation: "[s] = L, [vt²] = (LT⁻¹)T² = LT, and [0.5at] = (LT⁻²)T = LT⁻¹. Since terms added together have different dimensions, the equation is incorrect."
+                },
+                {
+                    question: "According to the provided applications of dimensional analysis, which task involves ensuring all terms in an equation have the same dimensions?",
+                    options: [
+                        "Unit Conversion",
+                        "Checking Equations",
+                        "Constant Dimensioning",
+                        "Relation Discovery"
+                    ],
+                    correct: 1,
+                    explanation: "Checking the homogeneity/correctness of equations requires verifying that all terms have identical dimensions."
+                },
+                {
+                    question: "Which metric prefix represents the multiplier 10⁹?",
+                    options: [
+                        "giga",
+                        "tera",
+                        "mega",
+                        "peta"
+                    ],
+                    correct: 0,
+                    explanation: "Giga (G) corresponds to 10⁹."
+                },
+                {
+                    question: "The period of a simple pendulum is given by τ = k √(l/g). If β is the power of length l and γ is the power of gravity g, which values satisfy dimensional consistency for the period T?",
+                    options: [
+                        "β = 1/2 , γ = -1/2",
+                        "β = 0 , γ = 1",
+                        "β = 1 , γ = -1",
+                        "β = -1/2 , γ = 1/2"
+                    ],
+                    correct: 0,
+                    explanation: "τ = k lᵇ gᵍ ⟹ T = Lᵇ (LT⁻²)ᵍ = Lᵇ⁺ᵍ T⁻²ᵍ. Equating powers gives γ = -1/2 and β = 1/2."
+                }
+            ]
         }
-    ];
+        
+        /* 
+        مثال لإضافة وحدة جديدة مستقبلاً:
+        , "kinematics": {
+            unitName: "Kinematics & Motion",
+            questions: [ ... ]
+        }
+        */
+    };
+
+    // تحديد الوحدة الحالية (يمكن تغيير المعرّف لاستدعاء أي وحدة مستقبلاً)
+    const currentUnitKey = "dimensional_analysis";
+    const currentModule = quizModules[currentUnitKey];
+    const questions = currentModule.questions;
 
     let currentIdx = 0;
     let score = 0;
     let answered = false;
+
+    // تهيئة عنوان الوحدة
+    document.getElementById('unit-title').innerText = currentModule.unitName;
 
     function loadQuestion() {
         answered = false;
