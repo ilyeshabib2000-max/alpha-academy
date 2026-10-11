@@ -553,15 +553,15 @@
 <div class="ambient-glow-2"></div>
 
 <div class="container">
-    <!-- شاشة اختيار الفصول (Chapter Selection) -->
+    <!-- شاشة اختيار الفصول -->
     <div id="selection-screen" class="chapter-selection">
         <h2>اختر الوحدة أو الفصل</h2>
-        <p>اختبر معلوماتك في فصول الفيزياء المختلفة</p>
+        <p>اختبر معلوماتك في فصول الفيزياء المختلفة (15 سؤالاً لكل وحدة)</p>
         <div class="chapter-grid">
             <div class="chapter-card" onclick="startQuiz('chapter_1')">
                 <div class="chapter-info">
                     <h3>Chapter 1: Dimensional Analysis & Measurement</h3>
-                    <span>7 أسئلة • تحليل الأبعاد والوحدات</span>
+                    <span>15 سؤالاً • تحليل الأبعاد والوحدات</span>
                 </div>
                 <div class="chapter-icon">
                     <i class="fa-solid fa-ruler-combined"></i>
@@ -570,7 +570,7 @@
             <div class="chapter-card" onclick="startQuiz('chapter_2')">
                 <div class="chapter-info">
                     <h3>Chapter 2: Kinematics - Motion in a Straight Line</h3>
-                    <span>7 أسئلة • الحركة المستقيمة والسرعة والتسارع</span>
+                    <span>15 سؤالاً • الحركة المستقيمة والسرعة والتسارع</span>
                 </div>
                 <div class="chapter-icon">
                     <i class="fa-solid fa-route"></i>
@@ -603,7 +603,7 @@
         <div id="quiz-box">
             <div class="progress-container">
                 <div class="progress-info">
-                    <span id="question-count">السؤال 1 من 7</span>
+                    <span id="question-count">السؤال 1 من 15</span>
                     <span id="progress-percent">0%</span>
                 </div>
                 <div class="progress-bar-bg">
@@ -633,7 +633,7 @@
                 </svg>
                 <div class="score-content">
                     <span class="score-percentage" id="score-percentage">0%</span>
-                    <span class="score-sub" id="score-sub-text">0 من 7</span>
+                    <span class="score-sub" id="score-sub-text">0 من 15</span>
                 </div>
             </div>
 
@@ -661,7 +661,7 @@
 
 <script>
     /* ==========================================================================
-        هيكل البيانات: إدارة الوحدات (Quiz Modules Database)
+        قاعدة بيانات الأسئلة (15 سؤال لكل وحدة)
        ========================================================================== */
     const quizModules = {
         "chapter_1": {
@@ -669,34 +669,19 @@
             questions: [
                 {
                     question: "Which derived unit is used to express pressure in the International System?",
-                    options: [
-                        "watt (W)",
-                        "newton (N)",
-                        "pascal (Pa)",
-                        "joule (J)"
-                    ],
+                    options: ["watt (W)", "newton (N)", "pascal (Pa)", "joule (J)"],
                     correct: 2,
                     explanation: "Pascal (Pa) is the SI derived unit of pressure, equivalent to one newton per square meter (N/m²)."
                 },
                 {
                     question: "What is the dimensional formula for mass density as derived from base units?",
-                    options: [
-                        "ML³",
-                        "ML⁻³",
-                        "ML⁻¹",
-                        "ML⁻²"
-                    ],
+                    options: ["ML³", "ML⁻³", "ML⁻¹", "ML⁻²"],
                     correct: 1,
                     explanation: "Mass density = Mass / Volume = M / L³ = ML⁻³."
                 },
                 {
                     question: "In dimensional analysis, what is the standard symbol used to represent the dimension of 'Amount of substance'?",
-                    options: [
-                        "N",
-                        "A",
-                        "n",
-                        "M"
-                    ],
+                    options: ["N", "A", "n", "M"],
                     correct: 0,
                     explanation: "In the SI dimensional representation, N is used for the Amount of Substance."
                 },
@@ -709,40 +694,78 @@
                         "The terms vt² and 0.5at have different dimensions from each other and from s."
                     ],
                     correct: 3,
-                    explanation: "[s] = L, [vt²] = (LT⁻¹)T² = LT, and [0.5at] = (LT⁻²)T = LT⁻¹. Since terms added together have different dimensions, the equation is incorrect."
+                    explanation: "[s] = L, [vt²] = LT, and [0.5at] = LT⁻¹. Since terms added together have different dimensions, the equation is incorrect."
                 },
                 {
-                    question: "According to the provided applications of dimensional analysis, which task involves ensuring all terms in an equation have the same dimensions?",
-                    options: [
-                        "Unit Conversion",
-                        "Checking Equations",
-                        "Constant Dimensioning",
-                        "Relation Discovery"
-                    ],
+                    question: "According to the applications of dimensional analysis, which task involves ensuring all terms in an equation have the same dimensions?",
+                    options: ["Unit Conversion", "Checking Equations", "Constant Dimensioning", "Relation Discovery"],
                     correct: 1,
                     explanation: "Checking the homogeneity/correctness of equations requires verifying that all terms have identical dimensions."
                 },
                 {
                     question: "Which metric prefix represents the multiplier 10⁹?",
-                    options: [
-                        "giga",
-                        "tera",
-                        "mega",
-                        "peta"
-                    ],
+                    options: ["giga", "tera", "mega", "peta"],
                     correct: 0,
                     explanation: "Giga (G) corresponds to 10⁹."
                 },
                 {
-                    question: "The period of a simple pendulum is given by τ = k √(l/g). If β is the power of length l and γ is the power of gravity g, which values satisfy dimensional consistency for the period T?",
+                    question: "The period of a simple pendulum is given by τ = k √(l/g). If β is the power of length l and γ is the power of gravity g, which values satisfy dimensional consistency?",
+                    options: ["β = 1/2 , γ = -1/2", "β = 0 , γ = 1", "β = 1 , γ = -1", "β = -1/2 , γ = 1/2"],
+                    correct: 0,
+                    explanation: "τ = k lᵇ gᵍ ⟹ T = Lᵇ (LT⁻²)ᵍ. Equating powers gives γ = -1/2 and β = 1/2."
+                },
+                {
+                    question: "What is the dimensional formula for velocity?",
+                    options: ["LT⁻¹", "LT⁻²", "L²T⁻¹", "MLT⁻¹"],
+                    correct: 0,
+                    explanation: "Velocity is displacement divided by time, so its dimension is [L]/[T] = LT⁻¹."
+                },
+                {
+                    question: "What is the dimensional formula for acceleration?",
+                    options: ["LT⁻¹", "LT⁻²", "L²T⁻²", "MLT⁻²"],
+                    correct: 1,
+                    explanation: "Acceleration is velocity change per unit time, yielding [LT⁻¹]/[T] = LT⁻²."
+                },
+                {
+                    question: "Which of the following physical quantities is dimensionless?",
+                    options: ["Speed", "Strain (relative change in length)", "Force", "Density"],
+                    correct: 1,
+                    explanation: "Strain is a ratio of two lengths ($\Delta L / L$), making it a dimensionless quantity."
+                },
+                {
+                    question: "What is the SI base unit for thermodynamic temperature?",
+                    options: ["Celsius (°C)", "Fahrenheit (°F)", "Kelvin (K)", "Joule (J)"],
+                    correct: 2,
+                    explanation: "Kelvin (K) is the official SI base unit for measuring thermodynamic temperature."
+                },
+                {
+                    question: "Which metric prefix corresponds to the factor 10⁻⁶?",
+                    options: ["milli", "micro", "nano", "pico"],
+                    correct: 1,
+                    explanation: "Micro ($\mu$) represents the factor 10⁻⁶."
+                },
+                {
+                    question: "What is the dimensional formula for force (derived from F = ma)?",
+                    options: ["MLT⁻²", "ML²T⁻²", "MLT⁻¹", "M²LT⁻²"],
+                    correct: 0,
+                    explanation: "Force = mass × acceleration, so [F] = M × LT⁻² = MLT⁻²."
+                },
+                {
+                    question: "What is the dimensional formula for work or energy ($W = F \\times d$)?",
+                    options: ["MLT⁻²", "ML²T⁻²", "ML²T⁻³", "ML⁻¹T⁻²"],
+                    correct: 1,
+                    explanation: "Work = Force × distance = (MLT⁻²) × L = ML²T⁻²."
+                },
+                {
+                    question: "Why can we not take the trigonometric function (like $\sin x$ or $\cos x$) of a dimensional quantity?",
                     options: [
-                        "β = 1/2 , γ = -1/2",
-                        "β = 0 , γ = 1",
-                        "β = 1 , γ = -1",
-                        "β = -1/2 , γ = 1/2"
+                        "Because trig functions only accept dimensionless arguments (angles in radians).",
+                        "Because angles have dimensions of length.",
+                        "Because trigonometric values must always be negative.",
+                        "Because it violates Newton's laws."
                     ],
                     correct: 0,
-                    explanation: "τ = k lᵇ gᵍ ⟹ T = Lᵇ (LT⁻²)ᵍ = Lᵇ⁺ᵍ T⁻²ᵍ. Equating powers gives γ = -1/2 and β = 1/2."
+                    explanation: "Arguments of transcendental functions like trigonometric, exponential, or logarithmic functions must be strictly dimensionless."
                 }
             ]
         },
@@ -762,56 +785,31 @@
                 },
                 {
                     question: "What does the geometric area under a velocity-time graph (v = f(t)) represent?",
-                    options: [
-                        "Acceleration",
-                        "Variation of acceleration",
-                        "Speed",
-                        "Displacement"
-                    ],
+                    options: ["Acceleration", "Variation of acceleration", "Speed", "Displacement"],
                     correct: 3,
                     explanation: "The area under a velocity-time graph represents the total displacement of the particle[cite: 4]."
                 },
                 {
                     question: "A particle moves along a straight line with an acceleration $a = 6t - 8$ with initial conditions $v(0) = 5\\text{ m/s}$ and $x(0) = 1\\text{ m}$. What is the velocity function $v(t)$?",
-                    options: [
-                        "v(t) = 3t² - 8t + 5",
-                        "v(t) = 6t² - 8t",
-                        "v(t) = 3t² - 8t",
-                        "v(t) = 6t - 3"
-                    ],
+                    options: ["v(t) = 3t² - 8t + 5", "v(t) = 6t² - 8t", "v(t) = 3t² - 8t", "v(t) = 6t - 3"],
                     correct: 0,
                     explanation: "Integrating acceleration: $v(t) = \\int (6t - 8)dt = 3t^2 - 8t + C$. Using $v(0) = 5$, we get $C = 5$, so $v(t) = 3t^2 - 8t + 5$[cite: 2]."
                 },
                 {
                     question: "Two balls of different masses ($m_1 = 0.8\\text{ kg}$ and $m_2 = 1.2\\text{ kg}$), initially at rest, fall in a vacuum from the same height $h$. Which ball hits the ground first?",
-                    options: [
-                        "Both balls hit the ground at the same time",
-                        "The ball of mass m₁",
-                        "The ball of mass m₂",
-                        "It depends on their initial shape"
-                    ],
+                    options: ["Both balls hit the ground at the same time", "The ball of mass m₁", "The ball of mass m₂", "It depends on their initial shape"],
                     correct: 0,
                     explanation: "In a vacuum, free-fall acceleration is independent of mass (Galileo's law), so both masses hit the ground simultaneously[cite: 4]."
                 },
                 {
                     question: "A ball is thrown upward with an initial velocity of $20\\text{ m/s}$ from the top of a $50\\text{ m}$ high rock. What is the maximum height $L_{max}$ reached by the ball from the ground? ($g = 10\\text{ m/s}^2$)",
-                    options: [
-                        "50 m",
-                        "70 m",
-                        "90 m",
-                        "100 m"
-                    ],
+                    options: ["50 m", "70 m", "90 m", "100 m"],
                     correct: 1,
-                    explanation: "At maximum height, $v = 0$. Using $v^2 - v_0^2 = -2g(h_{max} - h_0)$, $0 - 20^2 = -2(10)(h_{max} - 50) \Rightarrow -400 = -20(h_{max} - 50) \Rightarrow h_{max} = 20 + 50 = 70\\text{ m}$[cite: 2]."
+                    explanation: "At maximum height, $v = 0$. Using $v^2 - v_0^2 = -2g(h_{max} - h_0)$, we find $h_{max} = 70\\text{ m}$[cite: 2]."
                 },
                 {
                     question: "Based on the velocity diagram of a rectilinear car motion, if the speed increases uniformly from 0 to $12\\text{ m/s}$ in $2\\text{ s}$, what is the acceleration during this phase?",
-                    options: [
-                        "6 m/s²",
-                        "12 m/s²",
-                        "24 m/s²",
-                        "3 m/s²"
-                    ],
+                    options: ["6 m/s²", "12 m/s²", "24 m/s²", "3 m/s²"],
                     correct: 0,
                     explanation: "Acceleration $a = \\Delta v / \\Delta t = (12 - 0) / 2 = 6\\text{ m/s}^2$[cite: 4]."
                 },
@@ -825,6 +823,54 @@
                     ],
                     correct: 2,
                     explanation: "Constant speed means velocity is constant, hence acceleration is zero ($a = 0$), so the graph lies flat on the time axis[cite: 4]."
+                },
+                {
+                    question: "In Exercise 2, given $a = 6t - 8$ with $x(0) = 1\\text{ m}$ and $v(0) = 5\\text{ m/s}$, what is the position function $x(t)$?",
+                    options: ["x(t) = t³ - 4t² + 5t + 1", "x(t) = 3t³ - 8t² + t", "x(t) = t³ - 4t² + 1", "x(t) = 2t³ - 4t² + 5t"],
+                    correct: 0,
+                    explanation: "Integrating $v(t) = 3t^2 - 8t + 5$ gives $x(t) = t^3 - 4t^2 + 5t + C_2$. Since $x(0) = 1$, $C_2 = 1$[cite: 2]."
+                },
+                {
+                    question: "What is the nature of a motion where the acceleration vector is constant and non-zero, and parallel to the velocity vector?",
+                    options: ["Uniform rectilinear motion", "Uniformly accelerated rectilinear motion", "Circular motion", "Harmonic oscillation"],
+                    correct: 1,
+                    explanation: "A constant acceleration along the line of motion defines a uniformly accelerated (or decelerated) rectilinear motion."
+                },
+                {
+                    question: "If a car is moving with a constant deceleration of $2\\text{ m/s}^2$ until it stops, what happens to its velocity over time?",
+                    options: ["It remains constant", "It increases linearly", "It decreases linearly to zero", "It drops instantly to zero"],
+                    correct: 2,
+                    explanation: "Constant deceleration causes a linear decrease in velocity over time until it reaches zero when the car stops[cite: 3]."
+                },
+                {
+                    question: "In free fall, if air resistance is neglected, what is the acceleration of any object near the Earth's surface?",
+                    options: ["Zero", "Constant and equal to g (approx. 9.8 or 10 m/s²)", "Increasing with time", "Proportional to the object's mass"],
+                    correct: 1,
+                    explanation: "All objects in free fall experience a constant acceleration due to gravity ($g$) directed downward[cite: 2, 4]."
+                },
+                {
+                    question: "What does the slope of a position-time graph ($x$ versus $t$) represent at any given instant?",
+                    options: ["Acceleration", "Instantaneous velocity", "Total distance", "Jerk"],
+                    correct: 1,
+                    explanation: "The derivative of position with respect to time ($dx/dt$) represents the instantaneous velocity of the particle."
+                },
+                {
+                    question: "For a car traveling at a constant speed, what is its acceleration?",
+                    options: ["Positive constant", "Negative constant", "Zero", "Increasing linearly"],
+                    correct: 2,
+                    explanation: "Constant speed implies no change in velocity over time, meaning the acceleration is zero[cite: 4]."
+                },
+                {
+                    question: "In a velocity-time graph, what does a horizontal line parallel to the time axis indicate?",
+                    options: ["The object is stationary", "The object moves with constant velocity (zero acceleration)", "The object is undergoing free fall", "The object is reversing direction"],
+                    correct: 1,
+                    explanation: "A horizontal line on a $v(t)$ graph means velocity is not changing, indicating zero acceleration and constant speed[cite: 2, 4]."
+                },
+                {
+                    question: "A material point moves on the OX axis such that $v^2 = Ax + B$. What is its acceleration?",
+                    options: ["a = A / 2", "a = A", "a = 2A", "a = Ax"],
+                    correct: 0,
+                    explanation: "Differentiating $v^2 = Ax + B$ with respect to time gives $2v(dv/dt) = A(dx/dt) \implies 2v \cdot a = A v \implies a = A/2$[cite: 4]."
                 }
             ]
         }
