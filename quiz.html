@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- MathJax for rendering LaTeX formulas in questions/explanations only -->
+    <!-- MathJax for rendering LaTeX formulas -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -78,7 +78,7 @@
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 720px;
+            max-width: 760px;
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -87,6 +87,71 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border: 1px solid var(--card-border);
             transition: all 0.3s ease;
+        }
+
+        /* Chapter Selector Screen */
+        .chapter-selection {
+            text-align: center;
+        }
+
+        .chapter-selection h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .chapter-selection p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .chapter-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: right;
+        }
+
+        .chapter-card:hover {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .chapter-info h3 {
+            font-size: 1.15rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .chapter-info span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .chapter-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.2rem;
         }
 
         /* Nav & Header */
@@ -110,6 +175,7 @@
             border: 1px solid var(--card-border);
             border-radius: 10px;
             transition: all 0.2s ease;
+            cursor: pointer;
         }
 
         .back-link:hover {
@@ -487,91 +553,119 @@
 <div class="ambient-glow-2"></div>
 
 <div class="container">
-    <div class="top-nav">
-        <!-- زر الرجوع إلى صفحة الفيزياء -->
-        <a href="physics.html" class="back-link" onclick="if(history.length > 1 && document.referrer.includes('physic')) { event.preventDefault(); history.back(); }">
-            <i class="fa-solid fa-arrow-right"></i>
-            <span>الرجوع إلى الفيزياء</span>
-        </a>
+    <!-- شاشة اختيار الفصول (Chapter Selection) -->
+    <div id="selection-screen" class="chapter-selection">
+        <h2>اختر الوحدة أو الفصل</h2>
+        <p>اختبر معلوماتك في فصول الفيزياء المختلفة</p>
+        <div class="chapter-grid">
+            <div class="chapter-card" onclick="startQuiz('chapter_1')">
+                <div class="chapter-info">
+                    <h3>Chapter 1: Dimensional Analysis & Measurement</h3>
+                    <span>7 أسئلة • تحليل الأبعاد والوحدات</span>
+                </div>
+                <div class="chapter-icon">
+                    <i class="fa-solid fa-ruler-combined"></i>
+                </div>
+            </div>
+            <div class="chapter-card" onclick="startQuiz('chapter_2')">
+                <div class="chapter-info">
+                    <h3>Chapter 2: Kinematics - Motion in a Straight Line</h3>
+                    <span>7 أسئلة • الحركة المستقيمة والسرعة والتسارع</span>
+                </div>
+                <div class="chapter-icon">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="header">
-        <div class="header-title">
-            <div class="header-icon">
-                <i class="fa-solid fa-atom"></i>
-            </div>
-            <div>
-                <h1 id="quiz-title">Physics Quiz</h1>
-                <p id="unit-title">Loading Unit...</p>
-            </div>
+    <!-- شاشة الاختبار الفعلية -->
+    <div id="quiz-main-view" style="display: none;">
+        <div class="top-nav">
+            <a class="back-link" onclick="backToSelection()">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span>القائمة الرئيسية</span>
+            </a>
         </div>
-    </div>
 
-    <div id="quiz-box">
-        <div class="progress-container">
-            <div class="progress-info">
-                <span id="question-count">السؤال 1 من 7</span>
-                <span id="progress-percent">0%</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="progress-fill"></div>
+        <div class="header">
+            <div class="header-title">
+                <div class="header-icon">
+                    <i class="fa-solid fa-atom"></i>
+                </div>
+                <div>
+                    <h1 id="quiz-title">Physics Quiz</h1>
+                    <p id="unit-title">Loading Unit...</p>
+                </div>
             </div>
         </div>
 
-        <div class="question-card">
-            <div class="question-text" id="question-text"></div>
-            <div class="options-grid" id="options-container"></div>
-            <div class="explanation" id="explanation"></div>
+        <div id="quiz-box">
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span id="question-count">السؤال 1 من 7</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-text" id="question-text"></div>
+                <div class="options-grid" id="options-container"></div>
+                <div class="explanation" id="explanation"></div>
+            </div>
+
+            <div class="actions">
+                <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>
+                    <span>السؤال التالي</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="actions">
-            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>
-                <span>السؤال التالي</span>
-                <i class="fa-solid fa-arrow-left"></i>
+        <div class="result-card" id="result-box">
+            <div class="score-circle-wrapper">
+                <svg class="score-circle-svg" viewBox="0 0 150 150">
+                    <circle class="score-circle-bg" cx="75" cy="75" r="65"></circle>
+                    <circle class="score-circle-progress" id="circle-progress" cx="75" cy="75" r="65"></circle>
+                </svg>
+                <div class="score-content">
+                    <span class="score-percentage" id="score-percentage">0%</span>
+                    <span class="score-sub" id="score-sub-text">0 من 7</span>
+                </div>
+            </div>
+
+            <h2>نتيجة الاختبار</h2>
+            <div class="result-badge" id="result-status">ممتاز! أداء استثنائي</div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value correct-val" id="stat-correct">0</div>
+                    <div class="stat-label">الإجابات الصحيحة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value incorrect-val" id="stat-incorrect">0</div>
+                    <div class="stat-label">الإجابات الخاطئة</div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="restartQuiz()" style="margin: 0 auto;">
+                <i class="fa-solid fa-rotate-right"></i>
+                <span>إعادة الاختبار</span>
             </button>
         </div>
-    </div>
-
-    <div class="result-card" id="result-box">
-        <div class="score-circle-wrapper">
-            <svg class="score-circle-svg" viewBox="0 0 150 150">
-                <circle class="score-circle-bg" cx="75" cy="75" r="65"></circle>
-                <circle class="score-circle-progress" id="circle-progress" cx="75" cy="75" r="65"></circle>
-            </svg>
-            <div class="score-content">
-                <span class="score-percentage" id="score-percentage">0%</span>
-                <span class="score-sub" id="score-sub-text">0 من 7</span>
-            </div>
-        </div>
-
-        <h2 id="result-title">نتيجة الاختبار</h2>
-        <div class="result-badge" id="result-status">ممتاز! أداء استثنائي</div>
-
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-value correct-val" id="stat-correct">0</div>
-                <div class="stat-label">الإجابات الصحيحة</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value incorrect-val" id="stat-incorrect">0</div>
-                <div class="stat-label">الإجابات الخاطئة</div>
-            </div>
-        </div>
-
-        <button class="btn" onclick="restartQuiz()" style="margin: 0 auto;">
-            <i class="fa-solid fa-rotate-right"></i>
-            <span>إعادة الاختبار</span>
-        </button>
     </div>
 </div>
 
 <script>
     /* ==========================================================================
-       هيكل البيانات: إدارة الوحدات (Quiz Modules Database)
+        هيكل البيانات: إدارة الوحدات (Quiz Modules Database)
        ========================================================================== */
     const quizModules = {
-        "dimensional_analysis": {
-            unitName: "Dimensional Analysis & Measurement",
+        "chapter_1": {
+            unitName: "Chapter 1: Dimensional Analysis & Measurement",
             questions: [
                 {
                     question: "Which derived unit is used to express pressure in the International System?",
@@ -651,18 +745,120 @@
                     explanation: "τ = k lᵇ gᵍ ⟹ T = Lᵇ (LT⁻²)ᵍ = Lᵇ⁺ᵍ T⁻²ᵍ. Equating powers gives γ = -1/2 and β = 1/2."
                 }
             ]
+        },
+        "chapter_2": {
+            unitName: "Chapter 2: Kinematics - Motion in a Straight Line",
+            questions: [
+                {
+                    question: "A point M describes a straight trajectory. Which of the following properties is always true?",
+                    options: [
+                        "Its speed is constant",
+                        "Its velocity vector is constant",
+                        "Its acceleration vector is collinear with the velocity vector",
+                        "Its acceleration vector is orthogonal to the velocity vector"
+                    ],
+                    correct: 2,
+                    explanation: "For rectilinear motion (motion in a straight line), the acceleration vector is always collinear (parallel) to the velocity vector[cite: 4]."
+                },
+                {
+                    question: "What does the geometric area under a velocity-time graph (v = f(t)) represent?",
+                    options: [
+                        "Acceleration",
+                        "Variation of acceleration",
+                        "Speed",
+                        "Displacement"
+                    ],
+                    correct: 3,
+                    explanation: "The area under a velocity-time graph represents the total displacement of the particle[cite: 4]."
+                },
+                {
+                    question: "A particle moves along a straight line with an acceleration $a = 6t - 8$ with initial conditions $v(0) = 5\\text{ m/s}$ and $x(0) = 1\\text{ m}$. What is the velocity function $v(t)$?",
+                    options: [
+                        "v(t) = 3t² - 8t + 5",
+                        "v(t) = 6t² - 8t",
+                        "v(t) = 3t² - 8t",
+                        "v(t) = 6t - 3"
+                    ],
+                    correct: 0,
+                    explanation: "Integrating acceleration: $v(t) = \\int (6t - 8)dt = 3t^2 - 8t + C$. Using $v(0) = 5$, we get $C = 5$, so $v(t) = 3t^2 - 8t + 5$[cite: 2]."
+                },
+                {
+                    question: "Two balls of different masses ($m_1 = 0.8\\text{ kg}$ and $m_2 = 1.2\\text{ kg}$), initially at rest, fall in a vacuum from the same height $h$. Which ball hits the ground first?",
+                    options: [
+                        "Both balls hit the ground at the same time",
+                        "The ball of mass m₁",
+                        "The ball of mass m₂",
+                        "It depends on their initial shape"
+                    ],
+                    correct: 0,
+                    explanation: "In a vacuum, free-fall acceleration is independent of mass (Galileo's law), so both masses hit the ground simultaneously[cite: 4]."
+                },
+                {
+                    question: "A ball is thrown upward with an initial velocity of $20\\text{ m/s}$ from the top of a $50\\text{ m}$ high rock. What is the maximum height $L_{max}$ reached by the ball from the ground? ($g = 10\\text{ m/s}^2$)",
+                    options: [
+                        "50 m",
+                        "70 m",
+                        "90 m",
+                        "100 m"
+                    ],
+                    correct: 1,
+                    explanation: "At maximum height, $v = 0$. Using $v^2 - v_0^2 = -2g(h_{max} - h_0)$, $0 - 20^2 = -2(10)(h_{max} - 50) \Rightarrow -400 = -20(h_{max} - 50) \Rightarrow h_{max} = 20 + 50 = 70\\text{ m}$[cite: 2]."
+                },
+                {
+                    question: "Based on the velocity diagram of a rectilinear car motion, if the speed increases uniformly from 0 to $12\\text{ m/s}$ in $2\\text{ s}$, what is the acceleration during this phase?",
+                    options: [
+                        "6 m/s²",
+                        "12 m/s²",
+                        "24 m/s²",
+                        "3 m/s²"
+                    ],
+                    correct: 0,
+                    explanation: "Acceleration $a = \\Delta v / \\Delta t = (12 - 0) / 2 = 6\\text{ m/s}^2$[cite: 4]."
+                },
+                {
+                    question: "When an object moves in a straight line at a constant non-zero speed, what does its acceleration-versus-time graph look like?",
+                    options: [
+                        "A horizontal line above the t-axis",
+                        "A straight line passing through the origin with a positive slope",
+                        "A horizontal line coinciding with the t-axis ($a = 0$)",
+                        "A parabolic curve"
+                    ],
+                    correct: 2,
+                    explanation: "Constant speed means velocity is constant, hence acceleration is zero ($a = 0$), so the graph lies flat on the time axis[cite: 4]."
+                }
+            ]
         }
     };
 
-    const currentUnitKey = "dimensional_analysis";
-    const currentModule = quizModules[currentUnitKey];
-    const questions = currentModule.questions;
-
+    let currentChapterKey = "";
+    let currentModule = null;
+    let questions = [];
     let currentIdx = 0;
     let score = 0;
     let answered = false;
 
-    document.getElementById('unit-title').innerText = currentModule.unitName;
+    function startQuiz(chapterKey) {
+        currentChapterKey = chapterKey;
+        currentModule = quizModules[chapterKey];
+        questions = currentModule.questions;
+        currentIdx = 0;
+        score = 0;
+
+        document.getElementById('selection-screen').style.display = 'none';
+        document.getElementById('quiz-main-view').style.display = 'block';
+        document.getElementById('quiz-box').style.display = 'block';
+        document.getElementById('result-box').style.display = 'none';
+
+        document.getElementById('quiz-title').innerText = "Physics Quiz";
+        document.getElementById('unit-title').innerText = currentModule.unitName;
+
+        loadQuestion();
+    }
+
+    function backToSelection() {
+        document.getElementById('quiz-main-view').style.display = 'none';
+        document.getElementById('selection-screen').style.display = 'block';
+    }
 
     function loadQuestion() {
         answered = false;
@@ -791,8 +987,6 @@
 
         loadQuestion();
     }
-
-    loadQuestion();
 </script>
 </body>
 </html>
